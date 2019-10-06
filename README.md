@@ -29,13 +29,7 @@ In the project directory, you can run:
 #### Development Environment - Test Server with hot-reload
 
 ```
-
-Post which run the following command:
-
-```
-
 yarn start
-
 ```
 
 Runs the app in the development mode.<br>
@@ -47,17 +41,13 @@ You will also see any lint errors in the console.
 Kill process in port 3000 if encounterred with `ADDR IN USE` error or the like
 
 ```
-
 fuser -k 3000/tcp
-
 ```
 
 #### Production Environment - Test Server using BrowserSync
 
 ```
-
 yarn run build-serve
-
 ```
 
 Builds the app for production to the `build` folder.<br>
@@ -70,9 +60,7 @@ More info at: [BrowserSync](https://www.browsersync.io)
 #### Production Environment - Build
 
 ```
-
 yarn build
-
 ```
 
 Builds the app for production to the `build` folder.<br>
@@ -83,18 +71,13 @@ The build is minified and the filenames includes trailing hashes.<br>
 #### Code linting
 
 ```
-
 yarn run lint
-
 ```
 
 Checks spacing errors and other indentation issues in code and prints the result in the console.
 
 ```
-
 yarn run lint-fix
-
 ```
 
 Auto fixes some of the issues with spacing and indentation and displays
-```
