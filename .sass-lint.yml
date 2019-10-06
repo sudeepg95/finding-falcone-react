@@ -1,0 +1,23 @@
+options:
+  formatter: stylish
+files:
+  include:
+    - 'src/**/*.s+(a|c)ss'
+  ignore:
+    - 'src/Styles/**/disabled/**/*.s+(a|c)ss'
+    - 'node_modules/**/*.s+(a|c)ss'
+rules:
+  nesting-depth:
+    - 2
+    - max-depth: 3
+  no-misspelled-properties:
+    - 1
+    - 'extra-properties':
+        - 'overflow-scrolling'
+        - 'font-smoothing'
+        - 'overscroll-behavior'
+        - 'scrollbar-width'
+        - 'scrollbar-color'
+  leading-zero:
+    - 2
+    - include: true
