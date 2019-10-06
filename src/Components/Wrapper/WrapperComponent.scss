@@ -1,0 +1,81 @@
+@import '../../Styles/Themes/default';
+
+$wrapper-width: 100% !default;
+
+$wrapper-container-inner-spacing-vertical: 0 !default;
+$wrapper-container-inner-spacing-horizontal: 7% !default;
+$wrapper-container-max-width: rem(1980px) !default;
+$wrapper-container-spacing-vertical: 0 !default;
+
+$sub-wrapper-container-max-width-big: rem(1200px) !default;
+$sub-wrapper-container-max-width-small: rem(992px) !default;
+
+.wrapper {
+  @include -font-primary;
+  background: $app-off-bkg;
+  width: 100%;
+
+  .container {
+    margin: $wrapper-container-spacing-vertical auto;
+    max-width: $wrapper-container-max-width;
+    padding: $wrapper-container-inner-spacing-vertical $wrapper-container-inner-spacing-horizontal;
+
+    .sub-container {
+      margin: 0 auto;
+      padding: 3vh 4vh 5vh;
+
+      @include breakpoint('xxs', 's') {
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      &--full {
+        max-width: none;
+      }
+
+      &--big {
+        max-width: $sub-wrapper-container-max-width-big;
+      }
+
+      &--small {
+        max-width: $sub-wrapper-container-max-width-small;
+      }
+    }
+  }
+
+  .content {
+    background: $app-bkg;
+    color: $app-txt;
+    display: flex;
+    flex-direction: column;
+    height: 76vh;
+    margin: 0 auto;
+    overflow: auto;
+    @include breakpoint('xxs', 's') {
+      height: auto;
+      min-height: 66vh;
+      overflow-y: unset;
+    }
+  }
+
+  .box {
+    .title-box {
+      @extend %divider;
+      @include -font-bold;
+      margin-bottom: 0;
+      min-height: 4.5vh;
+      padding: 1.5vh 2vh 1vh;
+      text-transform: uppercase;
+    }
+
+    .box-content {
+      @extend %divider-grey;
+      height: auto;
+      max-height: unset;
+      padding: 3vh 4vh 5vh;
+      @include breakpoint('xxs', 'xs') {
+        padding: 1vh 0.5vh;
+      }
+    }
+  }
+}

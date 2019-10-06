@@ -3,6 +3,7 @@ import React from 'react';
 import RouteSwitcher from '../../Router/RouteSwitcher';
 import Routes from '../../Router/Routes';
 import LoaderService from '../../Services/LoaderService';
+import './AppComponent.scss';
 
 const LoaderComponent = React.lazy(() => import('../Loader/LoaderComponent'));
 const WrapperComponent = React.lazy(() => import('../Wrapper/WrapperComponent'));

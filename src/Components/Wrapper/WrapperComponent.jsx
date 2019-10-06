@@ -1,5 +1,7 @@
 import React from 'react';
 
+import './WrapperComponent.scss';
+
 const WrapperComponent = ({ children }) => (
   <main className="wrapper">
     <div className="container">

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import './NotFoundComponent.scss';
+
 const NotFoundComponent = () => {
   return (
     <div className="not-found-component">

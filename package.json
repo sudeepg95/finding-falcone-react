@@ -117,6 +117,7 @@
     "react-responsive-modal": "^4.0.1",
     "react-router-dom": "^5.0.1",
     "rxjs": "^6.4.0",
-    "rxjs-compat": "^6.5.3"
+    "rxjs-compat": "^6.5.3",
+    "webfontloader": "^1.6.28"
   }
 }
