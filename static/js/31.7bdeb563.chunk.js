@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[31],{85:function(e,a,n){"use strict";n.r(a);var t=n(0),c=n.n(t),r=n(26);n(79);a.default=function(){return c.a.createElement("header",{className:"header"},c.a.createElement("div",{className:"container"},c.a.createElement("div",{className:"content"},c.a.createElement("div",{className:"big-header-text"},c.a.createElement(r.a,{to:"/"},"Finding Falcone")))))}}}]);
+//# sourceMappingURL=31.7bdeb563.chunk.js.map
