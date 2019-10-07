@@ -1,13 +1,24 @@
 import React from 'react';
 
-const HomeComponent = React.lazy(() => import('../Components/Home/HomeComponent'));
+import { SolutionView } from '../Views/Solution';
+
+const ProblemComponent = React.lazy(() => import('../Components/Problem/ProblemComponent'));
+const HelpComponent = React.lazy(() => import('../Components/Help/HelpComponent'));
 const NotFoundComponent = React.lazy(() => import('../Components/NotFound/NotFoundComponent'));
 
 const Routes = [
   {
     path: '/',
     exact: true,
-    component: HomeComponent
+    component: ProblemComponent
+  },
+  {
+    path: '/solve',
+    component: SolutionView
+  },
+  {
+    path: '/help',
+    component: HelpComponent
   },
   {
     path: '*',

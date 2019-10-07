@@ -8,7 +8,11 @@ const FooterComponent = () => {
       <div className="container">
         <div className="content">
           <div className="small-footer-text">
-            <a href="https://www.geektrust.in/coding-problem/frontend/space">
+            <a
+              href="https://www.geektrust.in/coding-problem/frontend/space"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               Problem link (Geektrust)
             </a>
           </div>

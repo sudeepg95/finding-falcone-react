@@ -6,6 +6,38 @@ const API_URL =
     : window.location.hostname;
 const urlProtocol = 'https:';
 
+const fetchPlanets = async () => {
+  const requestOptions = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  };
+  const url = new URL(`${urlProtocol}${API_URL}/planets`);
+
+  LoaderService.enableLoader();
+  return fetch(url, requestOptions)
+    .then(handleResponse)
+    .then(response => {
+      return response;
+    })
+    .catch(handleFailure);
+};
+
+const fetchVehicles = async () => {
+  const requestOptions = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  };
+  const url = new URL(`${urlProtocol}${API_URL}/vehicles`);
+
+  LoaderService.enableLoader();
+  return fetch(url, requestOptions)
+    .then(handleResponse)
+    .then(response => {
+      return response;
+    })
+    .catch(handleFailure);
+};
+
 const handleResponse = response => {
   return response.text().then(text => {
     const data = text && JSON.parse(text);
@@ -26,6 +58,9 @@ const handleFailure = response => {
   return Promise.reject(error);
 };
 
-const APIService = {};
+const APIService = {
+  fetchPlanets,
+  fetchVehicles
+};
 
 export default APIService;
