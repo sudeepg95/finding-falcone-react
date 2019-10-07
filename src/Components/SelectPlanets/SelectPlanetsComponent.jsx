@@ -1,57 +1,44 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { Link, withRouter } from 'react-router-dom';
 
 import ItemComponent from '../Item/ItemComponent';
-import APIService from '../../Services/APIService';
+import { PlanetActions, OutcomeActions } from '../../Store/Actions';
+
+const mapStateToProps = state => ({
+  planet: state.planet,
+  outcome: state.outcome
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators({ ...PlanetActions, ...OutcomeActions }, dispatch)
+});
 
 class SelectPlanetsComponent extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      planets: [],
-      selectedPlanets: [],
-      error: ''
-    };
-    this.invokePlanetsAPI();
+  constructor(props) {
+    super(props);
+    const { actions } = props;
+    actions.fetchPlanetsData();
   }
 
   planetIndexIfExists(planet) {
-    const { selectedPlanets } = this.state;
-    return selectedPlanets.indexOf(planet.name);
+    const {
+      outcome: { selectedPlanets }
+    } = this.props;
+    return selectedPlanets.findIndex(item => item.name === planet.name);
   }
 
   selectPlanet(planet) {
-    const { selectedPlanets } = this.state;
-    const newSelectedPlanets = [...selectedPlanets];
-    const planetIndexIfExists = this.planetIndexIfExists(planet);
-    if (planetIndexIfExists > -1) {
-      newSelectedPlanets.splice(planetIndexIfExists, 1);
-      this.setState({
-        selectedPlanets: [...newSelectedPlanets]
-      });
-    } else if (selectedPlanets.length < 4) {
-      this.setState({
-        selectedPlanets: [...selectedPlanets, planet.name]
-      });
-    }
-  }
-
-  invokePlanetsAPI() {
-    APIService.fetchPlanets()
-      .then(result => {
-        this.setState({
-          planets: [...result]
-        });
-      })
-      .catch(err => {
-        this.setState({
-          error: err
-        });
-      });
+    const { actions } = this.props;
+    actions.selectPlanet(planet);
   }
 
   render() {
-    const { planets, selectedPlanets, error } = this.state;
+    const {
+      planet: { planets, error: planetError },
+      outcome: { selectedPlanets, error: outcomeError }
+    } = this.props;
     const planetsDOMMap = planets.map((planet, index) => (
       <ItemComponent
         type="planets"
@@ -75,9 +62,14 @@ class SelectPlanetsComponent extends React.Component {
             <Link to="/solve/select-vehicles">Select Vehicles to send to these planets</Link>
           </div>
         )}
-        {error.length > 0 && (
+        {planetError.length > 0 && (
           <div className="error-box">
-            <p>{error}</p>
+            <p>{planetError}</p>
+          </div>
+        )}
+        {outcomeError.length > 0 && (
+          <div className="error-box">
+            <p>{outcomeError}</p>
           </div>
         )}
       </>
@@ -85,4 +77,9 @@ class SelectPlanetsComponent extends React.Component {
   }
 }
 
-export default SelectPlanetsComponent;
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(SelectPlanetsComponent)
+);

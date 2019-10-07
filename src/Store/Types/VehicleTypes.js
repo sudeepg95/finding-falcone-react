@@ -1,0 +1,5 @@
+export const LOAD_VEHICLES_DATA = 'vehicles/LOAD_DATA_BUNCH';
+export const LOAD_VEHICLES_DATA_SUCCESS = 'vehicles/LOAD_DATA_BUNCH_SUCCESS';
+export const LOAD_VEHICLES_DATA_FAILURE = 'vehicles/LOAD_DATA_BUNCH_FAILURE';
+
+export const CLEAR_VEHICLE_ITEMS = 'vehicles/CLEAR_DATA_BUNCH';
