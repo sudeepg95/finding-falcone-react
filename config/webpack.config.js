@@ -573,7 +573,7 @@ module.exports = function(webpackEnv) {
         }),
       isEnvProduction &&
         new DynamicCdnWebpackPlugin({
-          only: ['react', 'react-dom', 'webfontloader'],
+          only: ['react', 'react-dom'],
           disable: false,
           verbose: true,
           resolver: (packageName, packageVersion, options) => {
@@ -591,13 +591,6 @@ module.exports = function(webpackEnv) {
                   name: packageName,
                   var: 'ReactDOM',
                   url: `https://cdn.jsdelivr.net/npm/${packageName}@${packageVersion}/umd/react-dom.${env}.min.js`,
-                  version: packageVersion
-                };
-              case 'webfontloader':
-                return {
-                  name: packageName,
-                  var: 'ReactDOM',
-                  url: `https://cdn.jsdelivr.net/npm/${packageName}@${packageVersion}/webfontloader.min.js`,
                   version: packageVersion
                 };
             }
