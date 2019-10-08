@@ -117,7 +117,8 @@ module.exports = function(webpackEnv) {
       loaders.push({
         loader: require.resolve(preProcessor),
         options: {
-          sourceMap: isEnvProduction && shouldUseSourceMap
+          sourceMap: isEnvProduction && shouldUseSourceMap,
+          prependData: `$publicPath: '` + publicPath + `';`
         }
       });
     }

@@ -2,6 +2,10 @@
 @import '../../Styles/Base/Other/Loader';
 @import '../../Styles/Themes/default';
 
+body {
+  background: $app-off-bkg;
+}
+
 .app {
   @include -font-primary;
   font-size: rem(16px);
