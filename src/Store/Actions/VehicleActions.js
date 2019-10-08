@@ -1,11 +1,6 @@
 import * as types from '../Types';
 
-const API_URL =
-  process.env.REACT_APP_API_BASE_URL !== ''
-    ? process.env.REACT_APP_API_BASE_URL
-    : window.location.hostname;
-const urlProtocol = 'https:';
-const VEHICLES_API_URL = `${API_URL}/vehicles`;
+const VEHICLES_API_URL = '/vehicles';
 
 export function fetchVehiclesData() {
   return {
@@ -14,7 +9,7 @@ export function fetchVehiclesData() {
       types.LOAD_VEHICLES_DATA_SUCCESS,
       types.LOAD_VEHICLES_DATA_FAILURE
     ],
-    promise: client => client.get(`${urlProtocol}${VEHICLES_API_URL}`)
+    promise: client => client.get(`${VEHICLES_API_URL}`)
   };
 }
 

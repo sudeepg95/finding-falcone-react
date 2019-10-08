@@ -15,7 +15,7 @@ const ItemComponent = props => {
           </div>
         )}
         <div className="item-img">
-          <img src={`/${type}/${item.name}.png`} alt={item.name} />
+          <img src={`${process.env.PUBLIC_URL}/${type}/${item.name}.png`} alt={item.name} />
         </div>
         <div className="item-details">
           <h3>{item.name}</h3>
@@ -58,7 +58,10 @@ const ItemComponent = props => {
               <div className="vehicle-overlay error" />
             )}
             <div className="item-img">
-              <img src={`/${type}/${vehicle.name}.png`} alt={vehicle.name} />
+              <img
+                src={`${process.env.PUBLIC_URL}/${type}/${vehicle.name}.png`}
+                alt={vehicle.name}
+              />
             </div>
             <div>
               <h3>{vehicle.name}</h3>

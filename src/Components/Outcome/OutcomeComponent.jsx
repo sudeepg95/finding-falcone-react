@@ -42,7 +42,7 @@ class OutcomeComponent extends React.PureComponent {
     return (
       <>
         <div className="image-box">
-          <img src="/space-badge.png" alt="space-badge" />
+          <img src={`${process.env.PUBLIC_URL}/space-badge.png`} alt="space-badge" />
         </div>
         {status === 'success' && (
           <div className="text-box">

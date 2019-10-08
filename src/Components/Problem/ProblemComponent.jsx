@@ -7,7 +7,7 @@ const ProblemComponent = () => {
       <div className="title-box">Welcome to the planet of Lengaburu</div>
       <div className="box-content">
         <div className="image-box image-box-bordered">
-          <img src="/eagle.png" alt="eagle" />
+          <img src={`${process.env.PUBLIC_URL}/eagle.png`} alt="eagle" />
         </div>
         <div className="text-box">
           <p className="description">

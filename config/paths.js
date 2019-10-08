@@ -3,6 +3,7 @@
 
 const { resolve } = require('path');
 const { realpathSync, existsSync } = require('fs');
+const { parse } = require('url');
 
 const appDirectory = realpathSync(process.cwd());
 const resolveApp = relativePath => resolve(appDirectory, relativePath);
