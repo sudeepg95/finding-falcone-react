@@ -35,14 +35,15 @@ $footer-navigation-height: rem(47px) !default;
     }
 
     .small-footer-text {
-      font-size: rem(12px);
       color: $app-ftr-txt;
+      font-size: rem(12px);
       text-decoration: none;
 
       a {
         color: $app-ftr-txt;
         cursor: pointer;
         text-decoration: none;
+
         &:hover {
           color: $app-bdr-reg;
         }

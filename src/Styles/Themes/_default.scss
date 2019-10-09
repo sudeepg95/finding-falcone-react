@@ -14,6 +14,9 @@ $app-btn-txt: $white;
 $app-input-bkg: $white;
 $app-error: $red;
 
+$app-green-overlay: rgba(40, 115, 91, 0.8);
+$app-yellow-overlay: rgba(159, 167, 58, 0.8);
+
 @import '../Base/Font';
 @import '../Base/Other';
 @import '../Base/Spacing';
