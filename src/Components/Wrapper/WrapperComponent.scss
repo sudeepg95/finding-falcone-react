@@ -110,6 +110,11 @@ $sub-wrapper-container-max-width-small: rem(992px) !default;
       }
     }
 
+    .items-box + .buttons-box {
+      display: block;
+      margin-bottom: 2rem;
+    }
+
     .text-box {
       p {
         margin-bottom: 1.5vh;
