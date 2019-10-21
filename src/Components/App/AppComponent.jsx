@@ -36,7 +36,7 @@ class AppComponent extends React.PureComponent {
     return (
       <>
         <React.Suspense fallback={<div>Loading...</div>}>
-          <div className={appComponentClassList.join(' ')}>
+          <div className={appComponentClassList.join(' ')} data-test="appComponent">
             <HeaderComponent />
             <WrapperComponent>
               <RouteSwitcher routes={Routes} />
