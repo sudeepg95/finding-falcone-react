@@ -2,7 +2,8 @@
   "env": {
     "browser": true,
     "commonjs": true,
-    "es6": true
+    "es6": true,
+    "jest": true
   },
   "extends": ["airbnb", "plugin:prettier/recommended"],
   "parser": "babel-eslint",
@@ -65,7 +66,14 @@
     "import/no-extraneous-dependencies": [
       "error",
       {
-        "devDependencies": ["**/scripts/*.js", "**/config/*.js"]
+        "devDependencies": [
+          "**/scripts/*.js",
+          "**/config/*.js",
+          "**/*.test.js",
+          "**/*.test.jsx",
+          "**/*Tests.js",
+          "**/Tests*.js"
+        ]
       }
     ],
     "react/no-array-index-key": 0,

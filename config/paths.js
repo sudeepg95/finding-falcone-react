@@ -50,6 +50,7 @@ module.exports = {
   appConfig: resolveApp('config'),
   appHtml: resolveApp('public/index.html'),
   appIndexJs: resolveModule(resolveApp, 'src/index'),
+  appJsConfig: resolveApp('jsconfig.json'),
   appNodeModules: resolveApp('node_modules'),
   appPackageJson: resolveApp('package.json'),
   appPath: resolveApp('.'),

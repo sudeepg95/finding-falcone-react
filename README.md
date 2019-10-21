@@ -81,3 +81,11 @@ yarn run lint-fix
 ```
 
 Auto fixes some of the issues with spacing and indentation and displays
+
+#### Issues/Warnings/TODO
+
+- Secondary theme
+- Issue with scroll within inner-container
+- Unit test integrations and write tests
+- Aesthetic improvements
+- https://github.com/supasate/connected-react-router/issues/250

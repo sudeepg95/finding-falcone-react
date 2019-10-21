@@ -41,12 +41,15 @@ const {
   appPath
 } = require('./paths');
 const getClientEnvironment = require('./env');
+const { additionalModulePaths, webpackAliases } = require('./modules');
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 // Some apps do not need the benefits of saving a web request, so not inlining the chunk
 // makes for a smoother build process.
 const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
+
+const imageInlineSizeLimit = parseInt(process.env.IMAGE_INLINE_SIZE_LIMIT || '10000', 10);
 
 // style files regexes
 const cssRegex = /\.css$/;
@@ -59,6 +62,10 @@ const sassModuleRegex = /\.module\.(scss|sass)$/;
 module.exports = function(webpackEnv) {
   const isEnvDevelopment = webpackEnv === 'development';
   const isEnvProduction = webpackEnv === 'production';
+
+  // Variable used for enabling profiling in Production
+  // passed into alias object. Uses a flag if passed into the build command
+  const isEnvProductionProfile = isEnvProduction && process.argv.includes('--profile');
 
   // Webpack uses `publicPath` to determine where the app is being served from.
   // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -118,7 +125,7 @@ module.exports = function(webpackEnv) {
         loader: require.resolve(preProcessor),
         options: {
           sourceMap: isEnvProduction && shouldUseSourceMap,
-          prependData: `$public-path: '` + publicPath + `';`
+          prependData: `$public-path: '${publicPath}';`
         }
       });
     }
@@ -177,7 +184,13 @@ module.exports = function(webpackEnv) {
       // Point sourcemap entries to original disk location (format as URL on Windows)
       devtoolModuleFilenameTemplate: isEnvProduction
         ? info => relative(appSrc, info.absoluteResourcePath).replace(/\\/g, '/')
-        : isEnvDevelopment && (info => _resolve(info.absoluteResourcePath).replace(/\\/g, '/'))
+        : isEnvDevelopment && (info => _resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
+      // Prevents conflicts when multiple Webpack runtimes (from different apps)
+      // are used on the same page.
+      jsonpFunction: `webpackJsonp${appPackageJson.name}`,
+      // this defaults to 'window', but by setting it to 'this' then
+      // module chunks which are built will work in web workers as well.
+      globalObject: 'this'
     },
     optimization: {
       minimize: isEnvProduction,
@@ -210,6 +223,9 @@ module.exports = function(webpackEnv) {
             mangle: {
               safari10: true
             },
+            // Added for profiling in devtools
+            keep_classnames: isEnvProductionProfile,
+            keep_fnames: isEnvProductionProfile,
             output: {
               ecma: 5,
               comments: false,
@@ -246,6 +262,7 @@ module.exports = function(webpackEnv) {
       ],
       // Automatically split vendor and commons
       // https://twitter.com/wSokra/status/969633336732905474
+      // eslint-disable-next-line max-len
       // https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
       splitChunks: {
         chunks: 'all',
@@ -274,14 +291,17 @@ module.exports = function(webpackEnv) {
       },
       // Keep the runtime chunk separated to enable long term caching
       // https://twitter.com/wSokra/status/969679223278505985
-      runtimeChunk: true
+      // https://github.com/facebook/create-react-app/issues/5358
+      runtimeChunk: {
+        name: entrypoint => `runtime-${entrypoint.name}`
+      }
     },
     resolve: {
       // This allows you to set a fallback for where Webpack should look for modules.
       // We placed these paths second because we want `node_modules` to "win"
       // if there are any conflicts. This matches Node resolution mechanism.
       // https://github.com/facebook/create-react-app/issues/253
-      modules: ['node_modules', appNodeModules],
+      modules: ['node_modules', appNodeModules].concat(additionalModulePaths || []),
       // These are the reasonable defaults supported by the Node ecosystem.
       // We also include JSX as a common component filename extension to support
       // some tools, although we do not recommend using it, see:
@@ -291,8 +311,15 @@ module.exports = function(webpackEnv) {
       extensions: moduleFileExtensions.map(ext => `.${ext}`).filter(ext => !ext.includes('ts')),
       alias: {
         // Support React Native Web
+        // eslint-disable-next-line max-len
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
-        'react-native': 'react-native-web'
+        'react-native': 'react-native-web',
+        // Allows for better profiling with ReactDevTools
+        ...(isEnvProductionProfile && {
+          'react-dom$': 'react-dom/profiling',
+          'scheduler/tracing': 'scheduler/tracing-profiling'
+        }),
+        ...(webpackAliases || {})
       },
       plugins: [
         // Prevents users = importing files = outside of src/ (or node_modules/).
@@ -340,7 +367,7 @@ module.exports = function(webpackEnv) {
               test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
               loader: require.resolve('url-loader'),
               options: {
-                limit: 10000,
+                limit: imageInlineSizeLimit,
                 name: 'static/media/[name].[hash:8].[ext]'
               }
             },
@@ -369,7 +396,7 @@ module.exports = function(webpackEnv) {
                 // It enables caching results in ./node_modules/.cache/babel-loader/
                 // directory for faster rebuilds.
                 cacheDirectory: true,
-                cacheCompression: isEnvProduction,
+                cacheCompression: false,
                 compact: isEnvProduction
               }
             },
@@ -387,7 +414,7 @@ module.exports = function(webpackEnv) {
                   [require.resolve('babel-preset-react-app/dependencies'), { helpers: true }]
                 ],
                 cacheDirectory: true,
-                cacheCompression: isEnvProduction,
+                cacheCompression: false,
 
                 // If an error happens in a package, it's possible to be
                 // because it was compiled. Thus, we don't want the browser
@@ -484,31 +511,26 @@ module.exports = function(webpackEnv) {
     },
     plugins: [
       // Generates an `index.html` file with the <script> injected.
-      new HtmlWebpackPlugin(
-        Object.assign(
-          {},
-          {
-            inject: true,
-            template: appHtml
-          },
-          isEnvProduction
-            ? {
-                minify: {
-                  removeComments: true,
-                  collapseWhitespace: true,
-                  removeRedundantAttributes: true,
-                  useShortDoctype: true,
-                  removeEmptyAttributes: true,
-                  removeStyleLinkTypeAttributes: true,
-                  keepClosingSlash: true,
-                  minifyJS: true,
-                  minifyCSS: true,
-                  minifyURLs: true
-                }
+      new HtmlWebpackPlugin({
+        inject: true,
+        template: appHtml,
+        ...(isEnvProduction
+          ? {
+              minify: {
+                removeComments: true,
+                collapseWhitespace: true,
+                removeRedundantAttributes: true,
+                useShortDoctype: true,
+                removeEmptyAttributes: true,
+                removeStyleLinkTypeAttributes: true,
+                keepClosingSlash: true,
+                minifyJS: true,
+                minifyCSS: true,
+                minifyURLs: true
               }
-            : undefined
-        )
-      ),
+            }
+          : undefined)
+      }),
       // Inlines the webpack runtime script. This script is too small to warrant
       // a network request.
       isEnvProduction &&
@@ -554,14 +576,15 @@ module.exports = function(webpackEnv) {
       new ManifestPlugin({
         fileName: 'asset-manifest.json',
         publicPath,
-        generate: (seed, files) => {
-          const manifestFiles = files.reduce(function(manifest, file) {
+        generate: (seed, files, entrypoints) => {
+          const manifestFiles = files.reduce((manifest, file) => {
             manifest[file.name] = file.path;
             return manifest;
           }, seed);
-
+          const entrypointFiles = entrypoints.main.filter(fileName => !fileName.endsWith('.map'));
           return {
-            files: manifestFiles
+            files: manifestFiles,
+            entrypoints: entrypointFiles
           };
         }
       }),
@@ -577,24 +600,27 @@ module.exports = function(webpackEnv) {
           disable: false,
           verbose: true,
           resolver: (packageName, packageVersion, options) => {
-            let env = options.env || 'production';
+            const pkgEnv = options.env || 'production';
             switch (packageName) {
               case 'react':
                 return {
                   name: packageName,
                   var: 'React',
-                  url: `https://cdn.jsdelivr.net/npm/${packageName}@${packageVersion}/umd/react.${env}.min.js`,
+                  // eslint-disable-next-line max-len
+                  url: `https://cdn.jsdelivr.net/npm/${packageName}@${packageVersion}/umd/react.${pkgEnv}.min.js`,
                   version: packageVersion
                 };
               case 'react-dom':
                 return {
                   name: packageName,
                   var: 'ReactDOM',
-                  url: `https://cdn.jsdelivr.net/npm/${packageName}@${packageVersion}/umd/react-dom.${env}.min.js`,
+                  // eslint-disable-next-line max-len
+                  url: `https://cdn.jsdelivr.net/npm/${packageName}@${packageVersion}/umd/react-dom.${pkgEnv}.min.js`,
                   version: packageVersion
                 };
+              default:
+                return null;
             }
-            return null;
           }
         })
     ].filter(Boolean),
